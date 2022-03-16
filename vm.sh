@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-VERSION="0.1"
+VERSION="0.1.3"
 
 #################################################
 # Depends on:                                   #
@@ -60,8 +60,24 @@ JSON()
   /usr/bin/python3 ./cloud-json-update.py $VM
 }
 
+################################################
+# Address                                      #
+# Need to make it so that it only outputs the  #
+# Info on debug                                #
+################################################
+Address()
+{
+  until govc vm.info -json $VM | jq -r --exit-status '.VirtualMachines[].Guest.IpAddress != ""';
+  do
+    echo "Not address yet, sleeping for ten seconds"; # move to debug only
+    sleep 10;
+  done
+  ADDR=$(govc vm.info -json $VM | jq -r '.VirtualMachines[].Guest.IpAddress')
+  echo "Address is: $ADDR"
+}
+
 #################################################
-# Main                                          #
+# Menu                                          #
 #################################################
 while getopts ":e:h:i:j:n:o:V" option; do
   case $option in
@@ -82,6 +98,9 @@ while getopts ":e:h:i:j:n:o:V" option; do
   esac
 done
 
+#################################################
+# Main                                          #
+#################################################
 source $ENV
 JSON
 echo "Attempting to: govc import.ova --options=./temp.json ./images/$OUTPUT" #move to debug only
@@ -92,26 +111,19 @@ govc device.remove -vm $VM cdrom-3002
 govc device.cdrom.add -vm $VM -controller ide-200
 govc device.cdrom.insert -vm $VM -device cdrom-3000 seed.iso
 govc vm.power -on $VM
-govc vm.info $VM
-until govc vm.info -json $VM | jq -r --exit-status '.VirtualMachines[].Guest.IpAddress != ""';
-do
-  echo "Not address yet, sleeping for five seconds"; # move to debug only
-  sleep 5;
-done
-echo "address is:"
-ADDR=$(govc vm.info -json $VM | jq -r '.VirtualMachines[].Guest.IpAddress')
-$ADDR
+Address
 ssh -o StrictHostKeyChecking=no $ADDR "sudo hostnamectl set-hostname $VM; sudo shutdown -h now"
-until govc vm.info -json $VM | jq -r '.VirtualMachines[].Runtime.PowerState == "poweredOff";
+until govc vm.info -json $VM | jq -r --exit-status '.VirtualMachines[].Runtime.PowerState == "poweredOff"';
 do
   echo "VM Not yet shutdown, sleeping for five seconds"; # move to debug only
   sleep 5;
 done
 govc device.remove -vm $VM cdrom-3000
 govc vm.power -on $VM
-
-
-#Cleanup, cleanup, everybody do your share
+Address
+govc vm.info $VM #This should display at the end, but suprress the output from Address normally.
+# Cleanup, cleanup, everybody do your share
+# Also, just to be  sure sensitive things do not accidentally end up in env variables when we don't expect them
 rm temp.json
 unset GOVC_INSECURE
 unset GOVC_URL
