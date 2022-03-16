@@ -1,0 +1,25 @@
+#cloud-config
+#vim:syntax=yaml
+groups:
+  - contoso
+users:
+# You don't have to keep the default user if you don't want it
+  - default
+# This is where you set your user stuff
+  - name: jdoe
+    ssh-authorized-keys:
+      - ssh-rsa $YOUR-RSA-KEY jdoe@contoso
+# This eliminates the need for password when doing sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+    groups: admin, sudo, nzdotech
+    shell: /bin/bash
+    primary_group: contoso
+# Hashed passwords can be generated with:
+# python -c 'import crypt,getpass; print crypt.crypt(getpass.getpass())'
+    passwd: $6$SecretHashHere
+# If you do keep that default user, probably a good idea to make them change their password.
+# Note, for Ubuntu cloud-img the default is ubuntu, other distros will have something else.
+chpasswd:
+  list: |
+    ubuntu:ubuntu
