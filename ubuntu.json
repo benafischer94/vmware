@@ -1,0 +1,42 @@
+{
+    "DiskProvisioning": "thin",
+    "PowerOn": false,
+    "Name": "Ubuntu-Cloud",
+    "PropertyMapping": [
+        {
+            "Key": "instance-id",
+            "Value": "id-ovf"
+        },
+        {
+            "Key": "hostname",
+            "Value": ""
+        },
+        {
+            "Key": "seedfrom",
+            "Value": ""
+        },
+        {
+            "Key": "public-keys",
+            "Value": ""
+        },
+        {
+            "Key": "user-data",
+            "Value":""
+        },
+        {
+            "Key": "password",
+            "Value": ""
+        }
+    ],
+    "InjectOvfEnv": false,
+    "MarkAsTemplate": false,
+    "WaitForIP": false,
+    "IPAllocationPolicy": "dhcpPolicy",
+    "IPProtocol": "IPv4",
+    "NetworkMapping": [
+        {
+            "Name": "VM Network",
+            "Network": "VM Network"
+        }
+    ]
+}
