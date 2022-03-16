@@ -12,7 +12,7 @@ users:
 # This eliminates the need for password when doing sudo
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
-    groups: admin, sudo, nzdotech
+    groups: admin, sudo, contoso
     shell: /bin/bash
     primary_group: contoso
 # Hashed passwords can be generated with:
