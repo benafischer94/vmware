@@ -36,8 +36,10 @@ Help()
 VM="foobar"
 ENV=".env"
 IMG="https://cloud-images.ubuntu.com/releases/20.04/reease/ubuntu-20.04-server-cloudimg-amd64.ova"
+JELLY_IMG="https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.ova"
 JSON="ubuntu.json"
 OUTPUT="20.04-cloud.ova"
+JELLY_OUTPUT="22.04-cloud.ova"
 ADDR='169.0.0.1'
 
 
@@ -47,7 +49,7 @@ ADDR='169.0.0.1'
 Download()
 {
   source $ENV
-  curl -L -C - $IMG --output -$OUTPUT
+  curl -L -C - $JELLY_IMG --output ./images/$JELLY_OUTPUT
 }
 
 #################################################
