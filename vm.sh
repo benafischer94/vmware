@@ -37,9 +37,11 @@ VM="foobar"
 ENV=".env"
 IMG="https://cloud-images.ubuntu.com/releases/20.04/reease/ubuntu-20.04-server-cloudimg-amd64.ova"
 JELLY_IMG="https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.ova"
+NOBLE_IMG="https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.ova"
 JSON="ubuntu.json"
 OUTPUT="20.04-cloud.ova"
 JELLY_OUTPUT="22.04-cloud.ova"
+NOBLE_OUTPUT="24.04-cloud.ova"
 ADDR='169.0.0.1'
 
 
@@ -49,7 +51,7 @@ ADDR='169.0.0.1'
 Download()
 {
   source $ENV
-  curl -L -C - $JELLY_IMG --output ./images/$JELLY_OUTPUT
+  curl -L -C - $NOBLE_IMG --output ./images/$NOBLE_OUTPUT
 }
 
 #################################################
@@ -79,6 +81,18 @@ Address()
 }
 
 #################################################
+# Bash complete                                 #
+# Register with complete -F _vm_complete newvm  #
+#################################################
+_vm_complete() {
+  local file
+  for file in ./."$2".env; do
+    [[ -d $file ]] || continue
+    COMREPLY+=( $(basename "$file") )
+  done
+}
+
+#################################################
 # Menu                                          #
 #################################################
 while getopts ":e:h:i:j:n:o:V" option; do
@@ -105,10 +119,10 @@ done
 #################################################
 source $ENV
 JSON
-echo "Attempting to: govc import.ova --options=./temp.json ./images/$OUTPUT" #move to debug only
+echo "Attempting to: govc import.ova --options=./temp.json ./images/$NOBLE_OUTPUT" #move to debug only
 # cat temp.json should only happen during debug
 pwd
-govc import.ova --options=temp.json ./images/$OUTPUT
+govc import.ova --options=temp.json ./images/$NOBLE_OUTPUT
 govc device.remove -vm $VM cdrom-3002
 govc device.cdrom.add -vm $VM -controller ide-200
 govc device.cdrom.insert -vm $VM -device cdrom-3000 seed.iso
