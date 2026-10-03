@@ -5,7 +5,7 @@
 Downloading and then pulling the json for import
 
 ```bash
-curl -L -C - https://cloud-images.ubuntu.com/releases/20.04/reease/ubuntu-20.04-server-cloudimg-amd64.ova --output 20.04-cloud.ova
+curl -L -C - https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.ova --output 24.04-cloud.ova
 govc import.spec ./20.04-cloud.ova | python -m json.tool > 2004.json
 ```
 
